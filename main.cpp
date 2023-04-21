@@ -124,7 +124,7 @@ bool DFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
 int bottleNeck(ResidualGraph &rg, vector<int> &parent, int s, int t)
 {
     int bottleneckflow = INT_MAX;
-    for (int y = t; y != s; y = parent[t])
+    for (int y = t; y != -1; y = parent[t])
     {
         int x = parent[y];
         bottleneckflow = min(bottleneckflow, rg.get_forward_flow(x, y));
@@ -136,7 +136,7 @@ int bottleNeck(ResidualGraph &rg, vector<int> &parent, int s, int t)
 int maxOutFlow(ResidualGraph &rg, vector<int> &parent, int s) // only source is needed no need of the sink
 {
     int maxoutflow = 0;
-    vector<int> v = rg.adj_residual[x];
+    vector<int> v = rg.adj_residual[s];
 
     for (auto i : v)
     {
@@ -145,19 +145,51 @@ int maxOutFlow(ResidualGraph &rg, vector<int> &parent, int s) // only source is 
     return maxoutflow;
 }
 
+void updateOriginalGraph(OriginalGraph &og, int bn, vector<int> &parent, int s, int t)
+{
+    for (int y = t; y != -1; y = parent[t])
+    {
+        int x = parent[y];
+        // bottleneckflow = min(bottleneckflow, rg.get_forward_flow(x, y));
+        og.set_flow(x, y, og.get_flow(x, y) + bn);
+    }
+}
+
+void updateResidualGraph(ResidualGraph &rg, OriginalGraph &og, vector<int> &parent, int s, int t)
+{
+    for (int y = t; y != -1; y = parent[t])
+    {
+        int x = parent[y];
+        rg.set_backward_flow(x, y, og.get_flow(x, y));
+        rg.set_forward_flow(x, y, og.get_capacity(x, y) - og.get_flow(x, y));
+    }
+}
 int main()
 {
     // cout << "Hello" << endl;
     // Edge e;
     ResidualGraph rg(5);
     OriginalGraph og(5);
-    // int source;
-    // int sink;
-    // // all flows will be updated based upon the input
-    // while (BFS(rg, parent, source, sink, visited) ) // this is to run FordFulkerson till we keep getting paths using BFS or DFS in residual graph
-    // {
-    // FordFulkerson(og, rg);
-    // }
+    int source;
+    int sink;
+    // visited array to be declared here
+    //  int bottleneck;
+    //  // all flows will be updated based upon the input
+    //  while (BFS(rg, parent, source, sink, visited) ) // this is to run FordFulkerson till we keep getting paths using BFS or DFS in residual graph
+    //  {
+    //  FordFulkerson(og, rg);
+    //  }
 
-    // Note : before running DFS or BFS we need to reinitialize the parent array
+    // Note : before running DFS or BFS we need to reinitialize the parent array and visited array
+
+    // One optimization for finding paths is just running a BFS and storing all the paths inside a vector
+    // So multiple BFS calls are not needed
+    while (BFS(rg, parent, source, sink, visited))
+    {
+        // parent and visited array need to be reinitialized here( by 0 and size n = any dimension of the graph)
+        int bottleneckflow = bottleNeck(rg, parent, source, sink);
+        updateOriginalGraph(og, bottleneckflow, parent, source, sink);
+        updateResidualGraph(rg, og, parent, source, sink);
+    }
+    cout << "The maximum possible outflow from source s to sink t is " << maxOutFlow(rg, parent, source) << endl;
 }
