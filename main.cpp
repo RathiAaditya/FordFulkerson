@@ -103,7 +103,48 @@ bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
     return vis[t];
 }
 
-// bool DFS(vector<vector<int>> &rg,ve)
+bool DFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
+{
+    if (s == t)
+        return true;
+    int n = rg.forward_flow.size();
+    vis[s] = true;
+    for (int i = 0; i < n; i++)
+    {
+        if (!vis[i] and rg.get_forward_flow(s, i) > 0)
+        {
+            parent[i] = s;
+            if (DFS(rg, parent, i, t, vis))
+                return true;
+        }
+    }
+    return false;
+}
+
+int bottleNeck(ResidualGraph &rg, vector<int> &parent, int s, int t)
+{
+    int bottleneckflow = INT_MAX;
+    for (int y = t; y != s; y = parent[t])
+    {
+        int x = parent[y];
+        bottleneckflow = min(bottleneckflow, rg.get_forward_flow(x, y));
+    }
+
+    return bottleneckflow;
+}
+
+int maxOutFlow(ResidualGraph &rg, vector<int> &parent, int s) // only source is needed no need of the sink
+{
+    int maxoutflow = 0;
+    vector<int> v = rg.adj_residual[x];
+
+    for (auto i : v)
+    {
+        maxoutflow += rg.get_forward_flow(s, i);
+    }
+    return maxoutflow;
+}
+
 int main()
 {
     // cout << "Hello" << endl;
@@ -117,4 +158,6 @@ int main()
     // {
     // FordFulkerson(og, rg);
     // }
+
+    // Note : before running DFS or BFS we need to reinitialize the parent array
 }
