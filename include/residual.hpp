@@ -15,9 +15,7 @@ public:
     void set_backward_flow(int u, int v, int f);
     std ::vector<bool> visited;
     std::vector<int> parent;
-    std::vector<std::vector<int>> adj_residual; // Adjacency list for residual graph
-
-private:
+    std::vector<std::vector<int>> adj_residual;  // Adjacency list for residual graph
     std::vector<std::vector<int>> forward_flow;  // Forward flow matrix
     std::vector<std::vector<int>> backward_flow; // Backward flow matrix
 };

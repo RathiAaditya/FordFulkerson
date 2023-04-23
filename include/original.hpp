@@ -15,10 +15,8 @@ public:
     void set_flow(int u, int v, int f);
     void set_capacity(int u, int v, int c);
     std::vector<std::vector<int>> adj_original; // Adjacency list for original graph
-
-private:
-    std::vector<std::vector<int>> flow;     // Flow matrix
-    std::vector<std::vector<int>> capacity; // Capacity matrix
+    std::vector<std::vector<int>> flow;         // Flow matrix
+    std::vector<std::vector<int>> capacity;     // Capacity matrix
 };
 
 #endif /* ORIGINAL_HPP */
