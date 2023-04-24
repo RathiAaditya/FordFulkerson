@@ -38,12 +38,19 @@
 
 bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
 {
+    cout << "Parent array before entering BFS" << endl;
+    for (int i = 0; i < parent.size(); i++)
+    {
+        cout << parent[i] << " ";
+    }
+    cout << endl;
     queue<int> q;
     q.push(s);
     vis[s] = true;
     parent[s] = -1;
     while (!q.empty())
     {
+        cout << "I am here" << endl;
         int u = q.front();
         q.pop();
         for (int v = 0; v < rg.adj_residual.size(); v++)
@@ -51,11 +58,18 @@ bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
             if (!vis[v] && rg.adj_residual[u][v] > 0)
             {
                 q.push(v);
+                cout << "pushing " << v << endl;
                 parent[v] = u;
                 vis[v] = true;
             }
         }
     }
+    cout << "Parent array after  BFS" << endl;
+    for (int i = 0; i < parent.size(); i++)
+    {
+        cout << parent[i] << " ";
+    }
+    cout << endl;
     return vis[t]; // return true if there is a path from s to t
 }
 
@@ -81,23 +95,36 @@ bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
 int bottleNeck(ResidualGraph &rg, vector<int> &parent, int s, int t)
 {
     int bottleneckflow = INT_MAX;
-    for (int y = t; y != -1; y = parent[y])
+    cout << "Finding bottleneck" << endl;
+    for (int i = 0; i < rg.parent.size(); i++)
+    {
+        cout << rg.parent[i] << " ";
+    }
+    cout << endl;
+    for (int y = t; parent[y] != -1; y = parent[y])
     {
         int x = parent[y];
         bottleneckflow = min(bottleneckflow, rg.get_forward_flow(x, y));
+        cout << "Min Flow uptil now " << bottleneckflow << endl;
     }
 
     return bottleneckflow;
 }
 
-int maxOutFlow(ResidualGraph &rg, vector<int> &parent, int s) // only source is needed no need of the sink
+int maxOutFlow(ResidualGraph &rg, int s) // only source is needed no need of the sink
 {
     int maxoutflow = 0;
-    vector<int> v = rg.adj_residual[s];
-
-    for (auto i : v)
+    // vector<int> v = rg.adj_residual[s];
+    cout << "Inside maximum outflow" << endl;
+    // for (auto i : v)
+    // {
+    //     cout << i << endl;
+    //     maxoutflow += rg.get_forward_flow(s, i);
+    // }
+    for (int i = 0; i < rg.adj_residual[s].size(); i++)
     {
-        maxoutflow += rg.get_forward_flow(s, i);
+        if (rg.adj_residual[i][s] > 0)
+            maxoutflow += rg.get_backward_flow(s, i);
     }
     return maxoutflow;
 }
@@ -181,6 +208,7 @@ int main()
 
     // One optimization for finding paths is just running a BFS and storing all the paths inside a vector
     // So multiple BFS calls are not needed
+    cout << "Flow between 6 and 7 is " << rg.get_forward_flow(6, 7) << endl;
     while (BFS(rg, rg.parent, source, sink, rg.visited))
     {
         // cout << "Hi" << endl;
@@ -195,13 +223,15 @@ int main()
             cout << k << " ";
         }
         cout << endl;
+
         // parent and visited array need to be reinitialized here( by 0 and size n = any dimension of the graph)
         int bottleneckflow = bottleNeck(rg, rg.parent, source, sink);
-        cout << "Bottleneck flow" << bottleneckflow << endl;
+        cout << "Bottleneck flow " << bottleneckflow << endl;
         // till this right
         //  cout << bottleneckflow << endl;
         og.updateOriginalGraph(og, bottleneckflow, rg.parent, source, sink);
         // cout << og.adj_original.size() << endl;
+        cout << "Updated original graph flow " << endl;
         for (int i = 0; i < og.adj_original.size(); i++)
         {
             for (int j = 0; j < og.adj_original[i].size(); j++)
@@ -210,11 +240,47 @@ int main()
             }
             cout << endl;
         }
+
         rg.updateResidualGraph(rg, og, rg.parent, source, sink);
+        // cout << "Flow between 6 and 7 is " << rg.get_forward_flow(6, 7) << endl;
+        // cout << "Residual graphs backward flow" << endl;
+        // cout << rg.get_backward_flow(1, 7) << endl;
+        // cout << "Residual graphs forward flow" << endl;
+        // cout << rg.get_forward_flow(1, 7) << endl;
+        cout << "Printing backward flow after updating residual graph" << endl;
+        for (int i = 0; i < rg.adj_residual.size(); i++)
+        {
+            for (int j = 0; j < rg.adj_residual[i].size(); j++)
+            {
+                cout << rg.get_backward_flow(i, j) << " ";
+            }
+            cout << endl;
+        }
+
+        cout << "Updated residual graph flow " << endl;
+        for (int i = 0; i < rg.adj_residual.size(); i++)
+        {
+            for (int j = 0; j < rg.adj_residual[i].size(); j++)
+            {
+                cout << rg.get_forward_flow(i, j) << " ";
+            }
+            cout << endl;
+        }
         rg.visited.assign(n, 0);
         rg.parent.assign(n, 0);
     }
-    cout << "The maximum possible outflow from source s to sink t is " << maxOutFlow(rg, rg.parent, source) << endl;
+    cout << "Printing backward flow at the end" << endl;
+    for (int i = 0; i < rg.adj_residual.size(); i++)
+    {
+        for (int j = 0; j < rg.adj_residual[i].size(); j++)
+        {
+            cout << rg.get_backward_flow(i, j) << " ";
+        }
+        cout << endl;
+    }
+    cout << "Printing flow graph at the end" << endl;
+
+    cout << "The maximum possible outflow from source s to sink t is " << maxOutFlow(rg, source) << endl;
 
     // DFS is better in Bipartite Graph
 }

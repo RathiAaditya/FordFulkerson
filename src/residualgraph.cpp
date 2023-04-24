@@ -41,6 +41,7 @@ void ResidualGraph::set_forward_flow(int u, int v, int f)
 
 void ResidualGraph::set_backward_flow(int u, int v, int f)
 {
+
     backward_flow[u][v] = f;
 }
 
@@ -51,10 +52,12 @@ void ResidualGraph::updateResidualGraph(ResidualGraph &rg, OriginalGraph &og, ve
         int x = parent[y];
         rg.set_backward_flow(x, y, og.get_flow(x, y));
         rg.set_forward_flow(x, y, og.get_capacity(x, y) - og.get_flow(x, y));
-        if (og.get_capacity(x, y) - og.get_flow(x, y))
+        if (og.get_capacity(x, y) == og.get_flow(x, y))
         {
             rg.adj_residual[x][y] = 0;
         }
+        if (rg.get_backward_flow(x, y) > 0)
+            rg.adj_residual[y][x] = 1;
         // if(og.get_flow(x,y)==0)
         // {
         //     rg.adj_residual[y][x]=0;   Not sure if this is right
