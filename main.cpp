@@ -150,7 +150,7 @@ int main()
     // int s = 0 t = 7;
     rg.add_edge(0, 1, 3);
     rg.add_edge(0, 4, 5);
-    rg.add_edge(1, 2, 2);
+    rg.add_edge(0, 2, 2);
     rg.add_edge(3, 1, 5);
     rg.add_edge(4, 3, 4);
     rg.add_edge(4, 2, 3);

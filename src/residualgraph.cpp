@@ -58,9 +58,9 @@ void ResidualGraph::updateResidualGraph(ResidualGraph &rg, OriginalGraph &og, ve
         }
         if (rg.get_backward_flow(x, y) > 0)
             rg.adj_residual[y][x] = 1;
-        // if(og.get_flow(x,y)==0)
-        // {
-        //     rg.adj_residual[y][x]=0;   Not sure if this is right
-        // }
+        if (og.get_flow(x, y) == 0)
+        {
+            rg.adj_residual[y][x] = 0; //  Not sure if this is right
+        }
     }
 }
