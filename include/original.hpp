@@ -2,6 +2,7 @@
 #define ORIGINAL_HPP
 
 #include "edge.hpp"
+#include "residual.hpp"
 #include <vector>
 
 using namespace std;
@@ -17,6 +18,8 @@ public:
     std::vector<std::vector<int>> adj_original; // Adjacency list for original graph
     std::vector<std::vector<int>> flow;         // Flow matrix
     std::vector<std::vector<int>> capacity;     // Capacity matrix
+    void initializeOriginalGraph(OriginalGraph &og, ResidualGraph &rg);
+    void updateOriginalGraph(OriginalGraph &og, int bn, vector<int> &parent, int s, int t);
 };
 
 #endif /* ORIGINAL_HPP */
