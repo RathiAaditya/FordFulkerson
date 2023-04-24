@@ -1,87 +1,10 @@
-#include "./include/original.hpp"
-#include "./include/residual.hpp"
+#include "./include/originalgraph.hpp"
+#include "./src/originalgraph.cpp"
+#include "./include/residualgraph.hpp"
+#include "./src/residualgraph.cpp"
 #include "./include/edge.hpp"
 #include "./include/fordfulkerson.hpp"
 #include <bits/stdc++.h>
-
-// Original Graph
-OriginalGraph::OriginalGraph(int n)
-{
-    flow.assign(n, vector<int>(n, 0));
-    capacity.assign(n, vector<int>(n, 0));
-    // adj_original.resize(n);
-    adj_original.assign(n, vector<int>(n, 0));
-}
-// if already an edge exists then just increase the capacity
-void OriginalGraph::add_edge(int u, int v, int w)
-{
-    adj_original[u][v] = 1;
-    // adj_original[v].push_back(u);
-    capacity[u][v] += w;
-}
-
-int OriginalGraph::get_flow(int u, int v) const
-{
-    return flow[u][v];
-}
-
-int OriginalGraph::get_capacity(int u, int v) const
-{
-    return capacity[u][v];
-}
-
-void OriginalGraph::set_flow(int u, int v, int f)
-{
-    flow[u][v] = f;
-}
-
-void OriginalGraph::set_capacity(int u, int v, int c)
-{
-    capacity[u][v] = c;
-}
-
-// Residual Graph
-ResidualGraph::ResidualGraph(int n)
-{
-    forward_flow.assign(n, vector<int>(n, 0));
-    backward_flow.assign(n, vector<int>(n, 0));
-    // adj_residual.resize(n);
-    adj_residual.assign(n, vector<int>(n, 0));
-    parent.resize(n);
-    visited.assign(n, 0);
-}
-
-void ResidualGraph::add_edge(int u, int v, int w)
-{
-    adj_residual[u][v] = 1;
-    // adj_residual[v].push_back(u);
-    forward_flow[u][v] += w;
-}
-
-void ResidualGraph::remove_edge(int u, int v)
-{
-    adj_residual[u][v] = 0;
-}
-
-int ResidualGraph::get_forward_flow(int u, int v) const
-{
-    return forward_flow[u][v];
-}
-
-int ResidualGraph::get_backward_flow(int u, int v) const
-{
-    return backward_flow[u][v];
-}
-
-void ResidualGraph::set_forward_flow(int u, int v, int f)
-{
-    forward_flow[u][v] = f;
-}
-
-void ResidualGraph::set_backward_flow(int u, int v, int f)
-{
-    backward_flow[u][v] = f;
-}
 
 // FordFulkerson::FordFulkerson(const OriginalGraph &original, const ResidualGraph &residual)
 
@@ -203,27 +126,57 @@ int main()
 {
     // cout << "Hello" << endl;
     // Edge e;
-    int n = 6; // number of vertices
+    int n = 8; // number of vertices
     ResidualGraph rg(n);
 
     // add edges to the residual graph
-    rg.add_edge(0, 1, 16);
-    rg.add_edge(0, 2, 13);
-    rg.add_edge(1, 2, 10);
-    rg.add_edge(1, 3, 12);
-    rg.add_edge(2, 1, 4);
-    rg.add_edge(2, 4, 14);
-    rg.add_edge(3, 2, 9);
-    rg.add_edge(3, 5, 20);
-    rg.add_edge(4, 3, 7);
-    rg.add_edge(4, 5, 4);
+    // rg.add_edge(0, 1, 16);
+    // rg.add_edge(0, 2, 13);
+    // rg.add_edge(1, 2, 10);
+    // rg.add_edge(1, 3, 12);
+    // rg.add_edge(2, 1, 4);
+    // rg.add_edge(2, 4, 14);
+    // rg.add_edge(3, 2, 9);
+    // rg.add_edge(3, 5, 20);
+    // rg.add_edge(4, 3, 7);
+    // rg.add_edge(4, 5, 4);
+    // int s = 0 t = 7;
+    rg.add_edge(0, 1, 3);
+    rg.add_edge(0, 4, 5);
+    rg.add_edge(1, 2, 2);
+    rg.add_edge(3, 1, 5);
+    rg.add_edge(4, 3, 4);
+    rg.add_edge(4, 2, 3);
+    rg.add_edge(2, 6, 4);
+    rg.add_edge(6, 3, 2);
+    rg.add_edge(1, 5, 2);
+    rg.add_edge(5, 3, 2);
+    rg.add_edge(1, 7, 4);
+    rg.add_edge(5, 7, 3);
+    rg.add_edge(6, 7, 3);
     // ResidualGraph rg(n);
     OriginalGraph og(n);
     // intializeResidualGraph(); // this is what user is entering
     og.initializeOriginalGraph(og, rg);
-
+    for (int i = 0; i < rg.adj_residual.size(); i++)
+    {
+        for (int j = 0; j < rg.adj_residual[i].size(); j++)
+        {
+            cout << rg.adj_residual[i][j] << " ";
+        }
+        cout << endl;
+    }
+    cout << endl;
+    for (int i = 0; i < og.adj_original.size(); i++)
+    {
+        for (int j = 0; j < og.adj_original[i].size(); j++)
+        {
+            cout << og.adj_original[i][j] << " ";
+        }
+        cout << endl;
+    }
     int source = 0;
-    int sink = 5;
+    int sink = 7;
     // visited array to be declared here
     //  int bottleneck;
     //  // all flows will be updated based upon the input
@@ -238,8 +191,15 @@ int main()
     // So multiple BFS calls are not needed
     while (BFS(rg, rg.parent, source, sink, rg.visited))
     {
+        for (int i = 0; i < rg.parent.size(); i++)
+        {
+            cout << rg.parent[i] << " ";
+        }
+        cout << endl;
         // parent and visited array need to be reinitialized here( by 0 and size n = any dimension of the graph)
         int bottleneckflow = bottleNeck(rg, rg.parent, source, sink);
+        cout << bottleneckflow << endl;
+        // cout << bottleneckflow << endl;
         og.updateOriginalGraph(og, bottleneckflow, rg.parent, source, sink);
         rg.updateResidualGraph(rg, og, rg.parent, source, sink);
         rg.visited.assign(n, 0);

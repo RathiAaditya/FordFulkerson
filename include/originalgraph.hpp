@@ -1,8 +1,8 @@
-#ifndef ORIGINAL_HPP
-#define ORIGINAL_HPP
+#ifndef ORIGINALGRAPH_HPP
+#define ORIGINALGRAPH_HPP
 
 #include "edge.hpp"
-#include "residual.hpp"
+#include "residualgraph.hpp"
 #include <vector>
 
 using namespace std;

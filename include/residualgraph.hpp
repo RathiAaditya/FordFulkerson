@@ -1,10 +1,13 @@
-#ifndef RESIDUAL_HPP
-#define RESIDUAL_HPP
+#ifndef RESIDUALGRAPH_HPP
+#define RESIDUALGRAPH_HPP
 
 #include "edge.hpp"
-#include "original.hpp"
 #include <vector>
+
+class OriginalGraph;
+
 using namespace std;
+
 class ResidualGraph
 {
 public:
