@@ -6,36 +6,6 @@
 #include "./include/fordfulkerson.hpp"
 #include <bits/stdc++.h>
 
-// FordFulkerson::FordFulkerson(const OriginalGraph &original, const ResidualGraph &residual)
-
-// bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
-// {
-//     queue<int> q;
-//     parent[s] = -1;
-//     q.push(s);
-
-//     while (!q.empty())
-//     {
-//         int x = q.front();
-//         q.pop();
-//         for (int k = 0; k < rg.adj_residual[x].size; k++)
-//             cout << rg.adj_residual[x][k] << " ";
-//         // vector<int> adjacency_list = rg.adj_residual;
-//         for (auto y : rg.adj_residual[x])
-//         {
-//             cout << y << endl;
-//             if (y and !vis[y] and rg.get_forward_flow(x, y) > 0)
-//             {
-//                 q.push(y);
-//                 parent[y] = x;
-//                 vis[y] = true;
-//             }
-//         }
-//     }
-
-//     return vis[t];
-// }
-
 bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
 {
     cout << "Parent array before entering BFS" << endl;
@@ -114,13 +84,7 @@ int bottleNeck(ResidualGraph &rg, vector<int> &parent, int s, int t)
 int maxOutFlow(ResidualGraph &rg, int s) // only source is needed no need of the sink
 {
     int maxoutflow = 0;
-    // vector<int> v = rg.adj_residual[s];
     cout << "Inside maximum outflow" << endl;
-    // for (auto i : v)
-    // {
-    //     cout << i << endl;
-    //     maxoutflow += rg.get_forward_flow(s, i);
-    // }
     for (int i = 0; i < rg.adj_residual[s].size(); i++)
     {
         if (rg.adj_residual[i][s] > 0)
@@ -131,23 +95,9 @@ int maxOutFlow(ResidualGraph &rg, int s) // only source is needed no need of the
 
 int main()
 {
-    // cout << "Hello" << endl;
-    // Edge e;
     int n = 8; // number of vertices
     ResidualGraph rg(n);
-
-    // add edges to the residual graph
-    // rg.add_edge(0, 1, 16);
-    // rg.add_edge(0, 2, 13);
-    // rg.add_edge(1, 2, 10);
-    // rg.add_edge(1, 3, 12);
-    // rg.add_edge(2, 1, 4);
-    // rg.add_edge(2, 4, 14);
-    // rg.add_edge(3, 2, 9);
-    // rg.add_edge(3, 5, 20);
-    // rg.add_edge(4, 3, 7);
-    // rg.add_edge(4, 5, 4);
-    // int s = 0 t = 7;
+    // Adding Edges initializing residual graph with it
     rg.add_edge(0, 1, 3);
     rg.add_edge(0, 4, 5);
     rg.add_edge(0, 2, 2);
@@ -161,9 +111,8 @@ int main()
     rg.add_edge(1, 7, 4);
     rg.add_edge(5, 7, 3);
     rg.add_edge(6, 7, 3);
-    // ResidualGraph rg(n);
     OriginalGraph og(n);
-    // intializeResidualGraph(); // this is what user is entering
+
     og.initializeOriginalGraph(og, rg);
     cout << "Initialized original capacity" << endl;
     for (int i = 0; i < rg.adj_residual.size(); i++)
@@ -185,38 +134,17 @@ int main()
         cout << endl;
     }
     cout << endl;
-    // for (int i = 0; i < og.adj_original.size(); i++)
-    // {
-    //     for (int j = 0; j < og.adj_original[i].size(); j++)
-    //     {
-    //         cout << og.adj_original[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
+
     cout << endl;
     int source = 0;
     int sink = 7;
-    // visited array to be declared here
-    //  int bottleneck;
-    //  // all flows will be updated based upon the input
-    //  while (BFS(rg, parent, source, sink, visited) ) // this is to run FordFulkerson till we keep getting paths using BFS or DFS in residual graph
-    //  {
-    //  FordFulkerson(og, rg);
-    //  }
 
     // Note : before running DFS or BFS we need to reinitialize the parent array and visited array
-
     // One optimization for finding paths is just running a BFS and storing all the paths inside a vector
     // So multiple BFS calls are not needed
-    cout << "Flow between 6 and 7 is " << rg.get_forward_flow(6, 7) << endl;
+
     while (BFS(rg, rg.parent, source, sink, rg.visited))
     {
-        // cout << "Hi" << endl;
-        // cout << rg.parent.size() << endl;
-        // for (int i = 0; i < rg.parent.size(); i++)
-        // {
-        //     cout << rg.parent[i] << " ";
-        // }
         cout << "Printing path in reverse order" << endl;
         for (int k = rg.parent.size() - 1; k >= 0; k = rg.parent[k])
         {
@@ -242,11 +170,6 @@ int main()
         }
 
         rg.updateResidualGraph(rg, og, rg.parent, source, sink);
-        // cout << "Flow between 6 and 7 is " << rg.get_forward_flow(6, 7) << endl;
-        // cout << "Residual graphs backward flow" << endl;
-        // cout << rg.get_backward_flow(1, 7) << endl;
-        // cout << "Residual graphs forward flow" << endl;
-        // cout << rg.get_forward_flow(1, 7) << endl;
         cout << "Printing backward flow after updating residual graph" << endl;
         for (int i = 0; i < rg.adj_residual.size(); i++)
         {

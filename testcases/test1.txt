@@ -1,0 +1,14 @@
+int n = 6;
+ResidualGraph rg(n);
+rg.add_edge(0, 1, 16);
+rg.add_edge(0, 2, 13);
+rg.add_edge(1, 2, 10);
+rg.add_edge(1, 3, 12);
+rg.add_edge(2, 1, 4);
+rg.add_edge(2, 4, 14);
+rg.add_edge(3, 2, 9);
+rg.add_edge(3, 5, 20);
+rg.add_edge(4, 3, 7);
+rg.add_edge(4, 5, 4);
+int source = 0;
+int sink = 5;
