@@ -63,7 +63,7 @@ int bottleNeck(ResidualGraph &rg, vector<int> &parent, int s, int t)
 int maxOutFlow(ResidualGraph &rg, int s) // only source is needed no need of the sink
 {
     int maxoutflow = 0;
-    cout << "Inside maximum outflow" << endl;
+    // cout << "Inside maximum outflow" << endl;
     for (int i = 0; i < rg.adj_residual[s].size(); i++)
     {
         if (rg.adj_residual[i][s] > 0)
@@ -101,22 +101,24 @@ int findDestionation(ResidualGraph &rg)
 }
 int main()
 {
-    int n = 8; // number of vertices
+    ifstream inputFile("t4_input.txt");
+    if (!inputFile.is_open())
+    {
+        cout << "Error in opening input file" << endl;
+    }
+    int n;
+    inputFile >> n;
     ResidualGraph rg(n);
-    // Adding Edges initializing residual graph with it
-    rg.add_edge(0, 1, 3);
-    rg.add_edge(0, 4, 5);
-    rg.add_edge(0, 2, 2);
-    rg.add_edge(3, 1, 5);
-    rg.add_edge(4, 3, 4);
-    rg.add_edge(4, 2, 3);
-    rg.add_edge(2, 6, 4);
-    rg.add_edge(6, 3, 2);
-    rg.add_edge(1, 5, 2);
-    rg.add_edge(5, 3, 2);
-    rg.add_edge(1, 7, 4);
-    rg.add_edge(5, 7, 3);
-    rg.add_edge(6, 7, 3);
+
+    int src, dst, wt;
+    cout << "Printing important" << endl;
+    while (!inputFile.eof())
+    {
+        inputFile >> src >> dst >> wt;
+        rg.add_edge(src, dst, wt);
+        cout << src << " " << dst << " " << wt << endl;
+    }
+
     OriginalGraph og(n);
     og.initializeOriginalGraph(og, rg);
     int source = 0;
@@ -139,6 +141,21 @@ int main()
 
             rg.updateResidualGraph(rg, og, rg.parent, source, sink);
             rg.visited.assign(n, 0);
+            int temp = parent[sink];
+            stack<int> s;
+            while (temp != source)
+            {
+                s.push(temp);
+                temp = parent[temp];
+            }
+
+            cout << "The s-t cut is " << endl;
+            while (!s.empty())
+            {
+                int cut = s.top();
+                cout << cut << " ";
+                s.pop();
+            }
             rg.parent.assign(n, 0);
         }
         delta = delta / 2;

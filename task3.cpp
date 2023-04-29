@@ -7,12 +7,12 @@
 
 bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
 {
-    cout << "Parent array before entering BFS" << endl;
-    for (int i = 0; i < parent.size(); i++)
-    {
-        cout << parent[i] << " ";
-    }
-    cout << endl;
+    // cout << "Parent array before entering BFS" << endl;
+    // for (int i = 0; i < parent.size(); i++)
+    // {
+    //     cout << parent[i] << " ";
+    // }
+    // cout << endl;
     queue<int> q;
     q.push(s);
     vis[s] = true;
@@ -33,12 +33,12 @@ bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
             }
         }
     }
-    cout << "Parent array after  BFS" << endl;
-    for (int i = 0; i < parent.size(); i++)
-    {
-        cout << parent[i] << " ";
-    }
-    cout << endl;
+    // cout << "Parent array after  BFS" << endl;
+    // for (int i = 0; i < parent.size(); i++)
+    // {
+    //     cout << parent[i] << " ";
+    // }
+    // cout << endl;
     return vis[t]; // return true if there is a path from s to t
 }
 
@@ -64,17 +64,17 @@ bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
 int bottleNeck(ResidualGraph &rg, vector<int> &parent, int s, int t)
 {
     int bottleneckflow = INT_MAX;
-    cout << "Finding bottleneck" << endl;
-    for (int i = 0; i < rg.parent.size(); i++)
-    {
-        cout << rg.parent[i] << " ";
-    }
-    cout << endl;
+    // cout << "Finding bottleneck" << endl;
+    // for (int i = 0; i < rg.parent.size(); i++)
+    // {
+    //     cout << rg.parent[i] << " ";
+    // }
+    // cout << endl;
     for (int y = t; parent[y] != -1; y = parent[y])
     {
         int x = parent[y];
         bottleneckflow = min(bottleneckflow, rg.get_forward_flow(x, y));
-        cout << "Min Flow uptil now " << bottleneckflow << endl;
+        // cout << "Min Flow uptil now " << bottleneckflow << endl;
     }
 
     return bottleneckflow;
@@ -83,7 +83,7 @@ int bottleNeck(ResidualGraph &rg, vector<int> &parent, int s, int t)
 int maxOutFlow(ResidualGraph &rg, int s) // only source is needed no need of the sink
 {
     int maxoutflow = 0;
-    cout << "Inside maximum outflow" << endl;
+    // cout << "Inside maximum outflow" << endl;
     for (int i = 0; i < rg.adj_residual[s].size(); i++)
     {
         if (rg.adj_residual[i][s] > 0)
@@ -136,65 +136,60 @@ int findSource(ResidualGraph &rg)
 int main()
 {
     // int n = 8; // number of vertices
-    ifstream inputFile("t4_input.txt");
+    ifstream inputFile("t3_testcases/testcase1.txt");
     if (!inputFile.is_open())
     {
         cout << "Error in opening input file" << endl;
     }
-    int n;
-    inputFile >> n;
+    int setA, setB;
+    int numberofEdges;
+    inputFile >> setA >> setB >> numberofEdges;
+    int n = setA + setB + 2;
     ResidualGraph rg(n);
 
     int src, dst, wt;
     cout << "Printing important" << endl;
-    while (!inputFile.eof())
+    for (int i = 0; i < numberofEdges; i++)
     {
-        inputFile >> src >> dst >> wt;
-        rg.add_edge(src, dst, wt);
-        cout << src << " " << dst << " " << wt << endl;
+        inputFile >> src >> dst;
+        rg.add_edge(src, dst, 1);
+        cout << src << " " << dst << endl;
+    }
+    int source = setA + setB;
+    int sink = setA + setB + 1;
+
+    for (int j = 0; j < setA; j++)
+    {
+        rg.add_edge(source, j, 1);
     }
 
-    // Adding Edges initializing residual graph with it
-    // rg.add_edge(0, 1, 3);
-    // rg.add_edge(0, 4, 5);
-    // rg.add_edge(0, 2, 2);
-    // rg.add_edge(3, 1, 5);
-    // rg.add_edge(4, 3, 4);
-    // rg.add_edge(4, 2, 3);
-    // rg.add_edge(2, 6, 4);
-    // rg.add_edge(6, 3, 2);
-    // rg.add_edge(1, 5, 2);
-    // rg.add_edge(5, 3, 2);
-    // rg.add_edge(1, 7, 4);
-    // rg.add_edge(5, 7, 3);
-    // rg.add_edge(6, 7, 3);
+    for (int j = setA; j < setA + setB; j++)
+    {
+        rg.add_edge(j, sink, 1);
+    }
+
     OriginalGraph og(n);
 
     og.initializeOriginalGraph(og, rg);
-    cout << "Initialized original capacity" << endl;
-    for (int i = 0; i < rg.adj_residual.size(); i++)
-    {
-        for (int j = 0; j < rg.adj_residual[i].size(); j++)
-        {
-            cout << og.get_capacity(i, j) << " ";
-        }
-        cout << endl;
-    }
+    // cout << "Initialized original capacity" << endl;
+    // for (int i = 0; i < rg.adj_residual.size(); i++)
+    // {
+    //     for (int j = 0; j < rg.adj_residual[i].size(); j++)
+    //     {
+    //         cout << og.get_capacity(i, j) << " ";
+    //     }
+    //     cout << endl;
+    // }
 
-    cout << "Initialized original flow" << endl;
-    for (int i = 0; i < rg.adj_residual.size(); i++)
-    {
-        for (int j = 0; j < rg.adj_residual[i].size(); j++)
-        {
-            cout << og.get_flow(i, j) << " ";
-        }
-        cout << endl;
-    }
-    cout << endl;
-
-    cout << endl;
-    int source = 0;
-    int sink = 4;
+    // cout << "Initialized original flow" << endl;
+    // for (int i = 0; i < rg.adj_residual.size(); i++)
+    // {
+    //     for (int j = 0; j < rg.adj_residual[i].size(); j++)
+    //     {
+    //         cout << og.get_flow(i, j) << " ";
+    //     }
+    //     cout << endl;
+    // }
 
     // Note : before running DFS or BFS we need to reinitialize the parent array and visited array
     // One optimization for finding paths is just running a BFS and storing all the paths inside a vector
@@ -202,63 +197,78 @@ int main()
 
     while (BFS(rg, rg.parent, source, sink, rg.visited))
     {
-        cout << "Printing path in reverse order" << endl;
-        for (int k = rg.parent.size() - 1; k >= 0; k = rg.parent[k])
-        {
-            cout << k << " ";
-        }
-        cout << endl;
+        // cout << "Printing path in reverse order" << endl;
+        // for (int k = rg.parent.size() - 1; k >= 0; k = rg.parent[k])
+        // {
+        //     cout << k << " ";
+        // }
+        // cout << endl;
 
         // parent and visited array need to be reinitialized here( by 0 and size n = any dimension of the graph)
         int bottleneckflow = bottleNeck(rg, rg.parent, source, sink);
-        cout << "Bottleneck flow " << bottleneckflow << endl;
+        // cout << "Bottleneck flow " << bottleneckflow << endl;
         // till this right
         //  cout << bottleneckflow << endl;
         og.updateOriginalGraph(og, bottleneckflow, rg.parent, source, sink);
         // cout << og.adj_original.size() << endl;
-        cout << "Updated original graph flow " << endl;
-        for (int i = 0; i < og.adj_original.size(); i++)
-        {
-            for (int j = 0; j < og.adj_original[i].size(); j++)
-            {
-                cout << og.get_flow(i, j) << " ";
-            }
-            cout << endl;
-        }
+        // cout << "Updated original graph flow " << endl;
+        // for (int i = 0; i < og.adj_original.size(); i++)
+        // {
+        //     for (int j = 0; j < og.adj_original[i].size(); j++)
+        //     {
+        //         cout << og.get_flow(i, j) << " ";
+        //     }
+        //     cout << endl;
+        // }
 
         rg.updateResidualGraph(rg, og, rg.parent, source, sink);
-        cout << "Printing backward flow after updating residual graph" << endl;
-        for (int i = 0; i < rg.adj_residual.size(); i++)
+        // cout << "Printing backward flow after updating residual graph" << endl;
+        // for (int i = 0; i < rg.adj_residual.size(); i++)
+        // {
+        //     for (int j = 0; j < rg.adj_residual[i].size(); j++)
+        //     {
+        //         cout << rg.get_backward_flow(i, j) << " ";
+        //     }
+        //     cout << endl;
+        // }
+
+        // cout << "Updated residual graph flow " << endl;
+        // for (int i = 0; i < rg.adj_residual.size(); i++)
+        // {
+        //     for (int j = 0; j < rg.adj_residual[i].size(); j++)
+        //     {
+        //         cout << rg.get_forward_flow(i, j) << " ";
+        //     }
+        //     cout << endl;
+        // }
+        rg.visited.assign(n, 0);
+        int temp = rg.parent[sink];
+        stack<int> s;
+        while (temp != source)
         {
-            for (int j = 0; j < rg.adj_residual[i].size(); j++)
-            {
-                cout << rg.get_backward_flow(i, j) << " ";
-            }
-            cout << endl;
+            s.push(temp);
+            temp = rg.parent[temp];
         }
 
-        cout << "Updated residual graph flow " << endl;
-        for (int i = 0; i < rg.adj_residual.size(); i++)
+        cout << "The s-t cut is " << endl;
+        while (!s.empty())
         {
-            for (int j = 0; j < rg.adj_residual[i].size(); j++)
-            {
-                cout << rg.get_forward_flow(i, j) << " ";
-            }
-            cout << endl;
+            int cut = s.top();
+            cout << cut << " ";
+            s.pop();
         }
-        rg.visited.assign(n, 0);
         rg.parent.assign(n, 0);
     }
-    cout << "Printing backward flow at the end" << endl;
-    for (int i = 0; i < rg.adj_residual.size(); i++)
-    {
-        for (int j = 0; j < rg.adj_residual[i].size(); j++)
-        {
-            cout << rg.get_backward_flow(i, j) << " ";
-        }
-        cout << endl;
-    }
-    cout << "Printing flow graph at the end" << endl;
+    // cout << "Printing backward flow at the end" << endl;
+    // for (int i = 0; i < rg.adj_residual.size(); i++)
+    // {
+    //     for (int j = 0; j < rg.adj_residual[i].size(); j++)
+    //     {
+    //         cout << rg.get_backward_flow(i, j) << " ";
+    //     }
+    //     cout << endl;
+    // }
+    // cout << "Printing flow graph at the end" << endl;
 
     cout << "The maximum possible outflow from source s to sink t is " << maxOutFlow(rg, source) << endl;
 
