@@ -2,8 +2,7 @@
 #include "./src/originalgraph.cpp"
 #include "./include/residualgraph.hpp"
 #include "./src/residualgraph.cpp"
-#include "./include/edge.hpp"
-#include "./include/fordfulkerson.hpp"
+
 #include <bits/stdc++.h>
 
 bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
@@ -20,7 +19,7 @@ bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
     parent[s] = -1;
     while (!q.empty())
     {
-        cout << "I am here" << endl;
+        // cout << "I am here" << endl;
         int u = q.front();
         q.pop();
         for (int v = 0; v < rg.adj_residual.size(); v++)
@@ -28,7 +27,7 @@ bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
             if (!vis[v] && rg.adj_residual[u][v] > 0)
             {
                 q.push(v);
-                cout << "pushing " << v << endl;
+                // cout << "pushing " << v << endl;
                 parent[v] = u;
                 vis[v] = true;
             }
@@ -95,22 +94,39 @@ int maxOutFlow(ResidualGraph &rg, int s) // only source is needed no need of the
 
 int main()
 {
-    int n = 8; // number of vertices
+    // int n = 8; // number of vertices
+    ifstream inputFile("t4_input.txt");
+    if (!inputFile.is_open())
+    {
+        cout << "Error in opening input file" << endl;
+    }
+    int n;
+    inputFile >> n;
     ResidualGraph rg(n);
+
+    int src, dst, wt;
+    cout << "Printing important" << endl;
+    while (!inputFile.eof())
+    {
+        inputFile >> src >> dst >> wt;
+        rg.add_edge(src, dst, wt);
+        cout << src << " " << dst << " " << wt << endl;
+    }
+
     // Adding Edges initializing residual graph with it
-    rg.add_edge(0, 1, 3);
-    rg.add_edge(0, 4, 5);
-    rg.add_edge(0, 2, 2);
-    rg.add_edge(3, 1, 5);
-    rg.add_edge(4, 3, 4);
-    rg.add_edge(4, 2, 3);
-    rg.add_edge(2, 6, 4);
-    rg.add_edge(6, 3, 2);
-    rg.add_edge(1, 5, 2);
-    rg.add_edge(5, 3, 2);
-    rg.add_edge(1, 7, 4);
-    rg.add_edge(5, 7, 3);
-    rg.add_edge(6, 7, 3);
+    // rg.add_edge(0, 1, 3);
+    // rg.add_edge(0, 4, 5);
+    // rg.add_edge(0, 2, 2);
+    // rg.add_edge(3, 1, 5);
+    // rg.add_edge(4, 3, 4);
+    // rg.add_edge(4, 2, 3);
+    // rg.add_edge(2, 6, 4);
+    // rg.add_edge(6, 3, 2);
+    // rg.add_edge(1, 5, 2);
+    // rg.add_edge(5, 3, 2);
+    // rg.add_edge(1, 7, 4);
+    // rg.add_edge(5, 7, 3);
+    // rg.add_edge(6, 7, 3);
     OriginalGraph og(n);
 
     og.initializeOriginalGraph(og, rg);
@@ -137,7 +153,7 @@ int main()
 
     cout << endl;
     int source = 0;
-    int sink = 7;
+    int sink = 4;
 
     // Note : before running DFS or BFS we need to reinitialize the parent array and visited array
     // One optimization for finding paths is just running a BFS and storing all the paths inside a vector
