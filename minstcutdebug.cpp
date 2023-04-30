@@ -33,7 +33,7 @@ bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
             }
         }
     }
-    cout << "Parent array after  BFS" << endl;
+    cout << "Parent array after BFS" << endl;
     for (int i = 0; i < parent.size(); i++)
     {
         cout << parent[i] << " ";
@@ -42,6 +42,39 @@ bool BFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
     return vis[t]; // return true if there is a path from s to t
 }
 
+vector<bool> DFS(ResidualGraph &rg, int s, vector<bool> &vis)
+{
+    vis[s] = true;
+    for (int i = 0; i < rg.adj_residual.size(); i++)
+    {
+        if (rg.adj_residual[s][i] and !vis[i])
+        {
+            cout << "Visited " << i << endl;
+            DFS(rg, i, vis);
+        }
+    }
+    return vis;
+}
+
+// vector<bool> BFS(ResidualGraph &rg, int s, vector<bool> &vis)
+// {
+//     vis[s] = true;
+
+//     while (!q.empty())
+//     {
+//         // cout << "I am here" << endl;
+//         int u = q.front();
+//         q.pop();
+//         for (int v = 0; v < rg.adj_residual.size(); v++)
+//         {
+//             if (!vis[v] && rg.adj_residual[u][v] > 0)
+//             {
+//                 q.push(v);
+//                 vis[v] = true;
+//             }
+//         }
+//     }
+// }
 // Not sure whether this is correct ..... Parent array needs to be backtracked in the for loop from i =0 to n
 //  bool DFS(ResidualGraph &rg, vector<int> &parent, int s, int t, vector<bool> vis)
 //  {
@@ -111,6 +144,19 @@ int findDestionation(ResidualGraph &rg)
     return -1;
 }
 
+void min_st_cut(ResidualGraph &rg, ResidualGraph &frg, vector<bool> &vis_array)
+{
+    for (int i = 0; i < rg.adj_residual.size(); i++)
+    {
+        for (int j = 0; j < rg.adj_residual[i].size(); j++)
+        {
+            if (vis_array[i] and !vis_array[j] and frg.adj_residual[i][j])
+            {
+                cout << i << " " << j << " " << frg.get_forward_flow(i, j) << endl;
+            }
+        }
+    }
+}
 int findSource(ResidualGraph &rg)
 {
     for (int i = 0; i < rg.adj_residual.size(); i++)
@@ -130,11 +176,10 @@ int findSource(ResidualGraph &rg)
     }
     return -1;
 }
-
 int main()
 {
     // int n = 8; // number of vertices
-    ifstream inputFile("t1_testcases/testcase8.txt");
+    ifstream inputFile("t1_testcases/testcase2.txt");
     if (!inputFile.is_open())
     {
         cout << "Error in opening input file" << endl;
@@ -151,21 +196,8 @@ int main()
         rg.add_edge(src, dst, wt);
         cout << src << " " << dst << " " << wt << endl;
     }
+    ResidualGraph frg = rg;
 
-    // Adding Edges initializing residual graph with it
-    // rg.add_edge(0, 1, 3);
-    // rg.add_edge(0, 4, 5);
-    // rg.add_edge(0, 2, 2);
-    // rg.add_edge(3, 1, 5);
-    // rg.add_edge(4, 3, 4);
-    // rg.add_edge(4, 2, 3);
-    // rg.add_edge(2, 6, 4);
-    // rg.add_edge(6, 3, 2);
-    // rg.add_edge(1, 5, 2);
-    // rg.add_edge(5, 3, 2);
-    // rg.add_edge(1, 7, 4);
-    // rg.add_edge(5, 7, 3);
-    // rg.add_edge(6, 7, 3);
     OriginalGraph og(n);
 
     og.initializeOriginalGraph(og, rg);
@@ -192,9 +224,7 @@ int main()
 
     cout << endl;
     int source = findSource(rg);
-    cout << "Source " << source << endl;
     int sink = findDestionation(rg);
-    cout << "Destination " << sink << endl;
 
     // Note : before running DFS or BFS we need to reinitialize the parent array and visited array
     // One optimization for finding paths is just running a BFS and storing all the paths inside a vector
@@ -249,6 +279,16 @@ int main()
         rg.visited.assign(n, 0);
         rg.parent.assign(n, 0);
     }
+    cout << "Printing forward flow from e to f " << rg.get_forward_flow(4, 5);
+    cout << "Printing residual graph" << endl;
+    for (int i = 0; i < rg.adj_residual.size(); i++)
+    {
+        for (int j = 0; j < rg.adj_residual[i].size(); j++)
+        {
+            cout << rg.adj_residual[i][j] << " ";
+        }
+        cout << endl;
+    }
     cout << "Printing backward flow at the end" << endl;
     for (int i = 0; i < rg.adj_residual.size(); i++)
     {
@@ -261,6 +301,16 @@ int main()
     cout << "Printing flow graph at the end" << endl;
 
     cout << "The maximum possible outflow from source s to sink t is " << maxOutFlow(rg, source) << endl;
+    rg.visited.assign(n, 0);
+    vector<bool> vis_array = DFS(rg, source, rg.visited);
+
+    for (int i = 0; i < vis_array.size(); i++)
+    {
+        cout << vis_array[i] << " ";
+    }
+    cout << endl;
+    cout << "Printing the min s-t cut" << endl;
+    min_st_cut(rg, frg, vis_array);
 
     // DFS is better in Bipartite Graph
 }
