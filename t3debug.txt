@@ -1,2 +1,0 @@
-The min s-t cut is
-The maximum possible outflow from source s to sink t is 0

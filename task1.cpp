@@ -134,7 +134,7 @@ int findSource(ResidualGraph &rg)
 int main()
 {
     // int n = 8; // number of vertices
-    ifstream inputFile("t1_testcases/testcase8.txt");
+    ifstream inputFile("t1_testcases/testcase7.txt");
     if (!inputFile.is_open())
     {
         cout << "Error in opening input file" << endl;
@@ -144,28 +144,14 @@ int main()
     ResidualGraph rg(n);
 
     int src, dst, wt;
-    cout << "Printing important" << endl;
+    // cout << "Printing important" << endl;
     for (int i = 0; i < numberofEdges; i++)
     {
         inputFile >> src >> dst >> wt;
-        rg.add_edge(src, dst, wt);
-        cout << src << " " << dst << " " << wt << endl;
+        rg.add_edge(src - 1, dst - 1, wt);
+        // cout << src << " " << dst << " " << wt << endl;
     }
 
-    // Adding Edges initializing residual graph with it
-    // rg.add_edge(0, 1, 3);
-    // rg.add_edge(0, 4, 5);
-    // rg.add_edge(0, 2, 2);
-    // rg.add_edge(3, 1, 5);
-    // rg.add_edge(4, 3, 4);
-    // rg.add_edge(4, 2, 3);
-    // rg.add_edge(2, 6, 4);
-    // rg.add_edge(6, 3, 2);
-    // rg.add_edge(1, 5, 2);
-    // rg.add_edge(5, 3, 2);
-    // rg.add_edge(1, 7, 4);
-    // rg.add_edge(5, 7, 3);
-    // rg.add_edge(6, 7, 3);
     OriginalGraph og(n);
 
     og.initializeOriginalGraph(og, rg);

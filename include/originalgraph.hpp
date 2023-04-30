@@ -1,7 +1,6 @@
 #ifndef ORIGINALGRAPH_HPP
 #define ORIGINALGRAPH_HPP
 
-#include "edge.hpp"
 #include "residualgraph.hpp"
 #include <vector>
 

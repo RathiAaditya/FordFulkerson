@@ -233,13 +233,15 @@ void fordfulkerson(ResidualGraph &rg, OriginalGraph &og, int source, int sink, i
 }
 int main()
 {
-    ifstream inputFile("t1_testcases/testcase2.txt");
+    ifstream inputFile("t1_testcases/testcase6.txt");
     if (!inputFile.is_open())
     {
         cout << "Error in opening input file" << endl;
     }
     int n, numberofEdges;
     inputFile >> n >> numberofEdges;
+
+    cout << "Printing nodes: " << n << " " << numberofEdges;
     ResidualGraph rg(n);
 
     int src, dst, wt;
@@ -248,7 +250,8 @@ int main()
     {
         inputFile >> src >> dst >> wt;
         rg.add_edge(src - 1, dst - 1, wt);
-        cout << src << " " << dst << " " << wt << endl;
+        // cout << "inside for loop" << endl;
+        // cout << src << " " << dst << " " << wt << endl;
     }
     ResidualGraph frg = rg;
 
