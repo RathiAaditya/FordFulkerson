@@ -36,12 +36,19 @@ int ResidualGraph::get_backward_flow(int u, int v) const
 
 void ResidualGraph::set_forward_flow(int u, int v, int f)
 {
+    if (f == 0)
+    {
+        this->adj_residual[u][v] = 0;
+    }
     forward_flow[u][v] = f;
 }
 
 void ResidualGraph::set_backward_flow(int u, int v, int f)
 {
-
+    if (f == 0)
+    {
+        this->adj_residual[v][u] = 0;
+    }
     backward_flow[u][v] = f;
 }
 
