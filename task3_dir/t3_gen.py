@@ -8,10 +8,10 @@ from matplotlib import pyplot as plt
 import random
 
 # for biparite graph genration
-nodeA = 500
-nodeB = 350
-numEdges = 100000
-tno = 6
+nodeA = 10
+nodeB = 10
+numEdges = 40
+tno = 8
 
 bG = bipartite.gnmk_random_graph(nodeA, nodeB, numEdges)
 

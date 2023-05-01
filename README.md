@@ -7,4 +7,5 @@
 4. Chirag Gadia (2020A7PS1721H)
 
 ## Bipartite Matching
-Run `bash task3.bash <tno>` to get output for ./task3_dir/t3_testcases/testcase<tno>.txt
+Run `bash task3.bash <tno>`
+To get output for ./task3_dir/t3_testcases/testcase<tno>.txt

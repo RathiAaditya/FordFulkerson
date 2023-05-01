@@ -28,18 +28,5 @@ if __name__ == '__main__':
     col_list = ['r' if i in pointsM else 'b' for i in points]
     nx.draw(B, pos, with_labels=True, edgelist=points, edge_color=col_list)
     # a = nx.maximal_matching(B)
-    # print(a)
-
-    # with open(f'./task3_dir/t3_answers/testcase{tno}.txt', 'r') as f:
-    #     lines = f.readlines()
-    #     lines = lines[:-2]
-    #     points = [tuple(map(int, line.strip().split())) for line in lines]
-    #     print(points)
-    # BM = nx.Graph()
-    # BM.add_nodes_from([i for i in range(setA)], bipartite=0)
-    # BM.add_nodes_from([i for i in range(setA+1, setA+setB)], bipartite=1)
-    # BM.add_edges_from(points)
-    # topM = nx.bipartite.sets(BM)[0]
-    # posM = nx.bipartite_layout(BM, topM)
-    # nx.draw(B, posM, with_labels=True)
+    plt.savefig("./task3_dir/t3_plots/testcase"+tno+".png")
     plt.show()
