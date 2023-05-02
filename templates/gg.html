@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Segmented Least Squares Algorithm</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+      h1 {
+        color: #555;
+        text-align: center;
+        margin-top: 20px;
+      }
+      h2 {
+        color: #888;
+        margin-top: 30px;
+      }
+      p {
+        color: #333;
+        line-height: 1.5;
+      }
+      table {
+        border-collapse: collapse;
+        margin: 20px 0;
+        width: 100%;
+      }
+      th {
+        background-color: #555;
+        color: #fff;
+        padding: 8px;
+        text-align: left;
+      }
+      td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      img {
+        display: block;
+        margin: 20px auto;
+        max-width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Segmented Least Squares Algorithm</h1>
+    <p>
+      The Segmented Least Squares algorithm is a technique used in statistics
+      and machine learning to fit a piecewise linear function to a set of data
+      points.
+    </p>
+    <p>
+      The algorithm works by dividing the data into segments and fitting a
+      separate line to each segment. The lines are then joined together to form
+      the piecewise linear function.
+    </p>
+    <h2>Algorithm Steps</h2>
+    <ol>
+      <li>Divide the data into segments.</li>
+      <li>Fit a line to each segment using the least squares method.</li>
+      <li>
+        Calculate the total sum of squares of the residuals (the differences
+        between the actual data points and the fitted lines).
+      </li>
+      <li>
+        Try different segmentations by combining adjacent segments and
+        re-fitting the lines. Calculate the sum of squares of the residuals for
+        each segmentation.
+      </li>
+      <li>
+        Select the segmentation with the lowest sum of squares of the residuals.
+      </li>
+    </ol>
+    <h2>Example</h2>
+    <p>Suppose we have the following set of data:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>x</th>
+          <th>y</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>6</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>5</td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>3</td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>1</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      By applying the Segmented Least Squares algorithm, we can fit a piecewise
+      linear function to this data:
+    </p>
+    <img
+      src="https://www.techiedelight.com/wp-content/uploads/2019/12/Segmented-Least-Squares-Algorithm.png"
+    />
+    <p>
+      The algorithm divides the data into two segments and fits a separate line
+      to each segment. The lines are then joined together to form the piecewise
+      linear function.
+    </p>
+    <h2>Implementation</h2>
+    <p>
+      The following code implements the Segmented Least Squares algorithm in
+      JavaScript:
+    </p>
+    <pre>
+      <code class="language-javascript">
+                                
+                        void getParameters(vector<Point> &p_list, int n)
+                        {
+                            vector<float> preX(n + 1), preY(n + 1), preXY(n + 1), preXX(n + 1);
+
+                            preX[0] = preY[0] = preXY[0] = preXX[0] = 0;
+
+                            float x_sum, y_sum, xy_sum, xx_sum, numerator, denominator;
+                            double _temp;
+                            int interval;
+                            for (int j = 1; j <= n; j++)
+                            {
+                                // Prefix sum for x, y, xy and xx for easy calculations
+                                preX[j] = preX[j - 1] + p_list[j].x;
+                                preY[j] = preY[j - 1] + p_list[j].y;
+                                preXY[j] = preXY[j - 1] + p_list[j].x * p_list[j].y;
+                                preXX[j] = preXX[j - 1] + p_list[j].x * p_list[j].x;
+                                for (int i = 1; i <= j; i++)
+                                {
+                                    interval = j - i + 1;
+                                    // Sum of x, y, xy and xx for each segment
+                                    x_sum = preX[j] - preX[i - 1];
+                                    y_sum = preY[j] - preY[i - 1];
+                                    xy_sum = preXY[j] - preXY[i - 1];
+                                    xx_sum = preXX[j] - preXX[i - 1];
+
+                                    // Calculate slope for each segment
+                                    numerator = (interval * xy_sum) - (x_sum * y_sum);
+                                    if (numerator == 0)
+                                    {
+                                        slope[i][j] = 0.0;
+                                    }
+                                    else
+                                    {
+                                        denominator = interval * xx_sum - x_sum * x_sum;
+                                        if (denominator == 0)
+                                        {
+                                            slope[i][j] == INT_MAX;
+                                        }
+                                        else
+                                        {
+                                            slope[i][j] = numerator / (double)denominator;
+                                        }
+                                    }
+
+                                    // Calculate intercept for each segment
+                                    intercept[i][j] = (y_sum - slope[i][j] * x_sum) / (double)interval;
+
+                                    // Calculate error for each segment
+                                    error[i][j] = 0.0;
+                                    for (int k = i; k <= j; k++)
+                                    {
+                                        _temp = p_list[k].y - (slope[i][j] * p_list[k].x) - intercept[i][j];
+                                        error[i][j] += _temp * _temp;
+                                    }
+                                    total_cost += error[i][j];
+                                }
+                            }
+                        }
+
+                        void calculateOptimal(int n, int cost)
+                        {
+                            optimal[0] = optimal_segment[0] = 0;
+                            float temp_cost, min_cost;
+                            int min_cost_index;
+                            for (int p = 1; p <= n; p++)
+                            {
+                                int min_cost = INT_MAX, min_cost_index = 0;
+                                for (int q = 1; q <= p; q++)
+                                {
+                                    temp_cost = error[q][p] + optimal[q - 1];
+                                    // Update min cost
+                                    if (temp_cost < min_cost)
+                                    {
+                                        min_cost = temp_cost;
+                                        min_cost_index = q;
+                                    }
+                                }
+                                // Store optimal cost and terminal point of optimal segment
+                                optimal[p] = min_cost + cost;
+                                optimal_segment[p] = min_cost_index;
+                            }
+                        }
+
+                        int main(int argc, char *argv[])
+                        {
+                            if (argc != 2)
+                            {
+                                cerr << "Error: Invalid number of arguments." << endl;
+                                exit(0);
+                            }
+                            // List of points
+                            vector<Point> p_list;
+                            float x, y;
+                            // Cost of additional segement
+                            int cost;
+
+                            // Open input.txt
+                            ifstream inputFile("./testcases/testcase" + string(argv[1]) + ".txt");
+                            if (!inputFile.is_open())
+                            {
+                                cerr << "Error: input.txt not Found." << endl;
+                                exit(0);
+                            }
+                            inputFile >> cost;
+                            p_list.push_back(Point(0, 0));
+
+                            // Read points till End of File
+                            while (!inputFile.eof())
+                            {
+                                inputFile >> x >> y;
+                                p_list.push_back(Point(x, y));
+                            }
+                            int n = p_list.size() - 1;
+
+                            preprocess(n);
+
+                            sort(p_list.begin() + 1, p_list.end());
+
+                            getParameters(p_list, n);
+
+                            calculateOptimal(n, cost);
+
+                            // Pushing end points of optimal segemnets in stack
+                            stack<int> index_stack;
+                            int j = optimal_segment[n];
+                            for (int i = n; i > 0; i = j - 1, j = optimal_segment[i])
+                            {
+                                index_stack.push(i);
+                                index_stack.push(j);
+                            }
+
+                            // Open output.tx
+                            ofstream outputFile("./segments/segment" + string(argv[1]) + ".txt");
+                            ofstream outputFile2("./slopes/slope" + string(argv[1]) + ".txt");
+                            if (!outputFile.is_open())
+                            {
+                                cerr << "Error: segment file not Found." << endl;
+                                exit(0);
+                            }
+                            if (!outputFile2.is_open())
+                            {
+                                cerr << "Error: slope file not Found." << endl;
+                                exit(0);
+                            }
+
+                            total_cost = optimal[n];
+                            // Write optimal cost and optimal segments in output.txt for visulization
+
+                            while (!index_stack.empty())
+                            {
+                                int i = index_stack.top();
+                                index_stack.pop();
+                                int j = index_stack.top();
+                                index_stack.pop();
+                                outputFile2 << slope[i][j] << "\t" << intercept[i][j] << endl;
+                                outputFile << i << " " << j << endl;
+                            }
+                            cout << "Total Cost: " << total_cost << endl;
+                            return 0;
+                        }
+        </pre>
+        </code>
+    </pre>
+    <p>
+      The algorithm first calculates the total sum of squares of the residuals
+      for the data. It then calculates the total sum of squares of the residuals
+      for the data using the least squares method. The error for fitting the
+      data with a single line is calculated by subtracting the total sum of
+      squares of the residuals for the data using the least squares method from
+      the total sum of squares of the residuals for the data.
+    </p>
+  </body>
+</html>
