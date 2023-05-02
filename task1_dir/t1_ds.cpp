@@ -1,11 +1,11 @@
 /**
- * @file task1.cpp
+ * @file t1_ds.cpp
  * @author
  *  Aaditya Rathi (2020A7PS2191H)
  *  Sankalp Kulkarni (2020A7PS1097H)
  *  Shreyas Dixit (2020A7PS2079H)
  *  Chirag Gadia (2020A7PS1721H)
- * @brief Implementation of Ford Fulkerson Algorithm and min s-t cut subroutine
+ * @brief Implementation of Ford Fulkerson Algorithm with delta scaling and min s-t cut subroutine
  * @version 0.1
  * @date 2023-05-01
  *
@@ -23,10 +23,10 @@
 using namespace std;
 
 /**
- * @brief
+ * @brief Return nearest power of 2 less than n
  *
- * @param n
- * @return int
+ * @param n Nearest power of this number is returned
+ * @return int k such that 2**k <= n < 2**(k+1)
  */
 int getnearestpoweroftwo(int n)
 {
@@ -41,11 +41,11 @@ int getnearestpoweroftwo(int n)
 }
 
 /**
- * @brief
+ * @brief reurns delta flow value in residual graph from given source
  *
- * @param resGraph
- * @param src
- * @return int
+ * @param resGraph Residual graph of original graph
+ * @param src Delta flow from node with this index is calculated
+ * @return int delta flow from source im given residual graph
  */
 int getdeltaflow(vector<vector<int>> &resGraph, int src)
 {
@@ -61,7 +61,7 @@ int getdeltaflow(vector<vector<int>> &resGraph, int src)
 }
 
 /**
- * @brief
+ * @brief Implements Breadth First Search
  *
  * @param flows
  * @param parent
