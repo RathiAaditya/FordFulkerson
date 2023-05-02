@@ -4,7 +4,7 @@ from matplotlib import pyplot as plt
 
 if __name__ == '__main__':
     if (len(sys.argv) < 2):
-        print("Usage: python task6.py <input_file_no> ")
+        print("Usage: python task3_vis.py <input_file_no> ")
 
     tno = sys.argv[1]
     # read the points from the file

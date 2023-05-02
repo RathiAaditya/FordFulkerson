@@ -1,0 +1,4 @@
+Printing s-t cut edges
+3 5 2
+4 5 6
+Max Flow in this graph is: 8

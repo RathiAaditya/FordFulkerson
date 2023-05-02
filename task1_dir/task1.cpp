@@ -20,16 +20,17 @@
 using namespace std;
 
 /**
- * @brief
+ * @brief Implements Breadth First Search to find augmented path from source to sink is flows graph
  *
- * @param flows
- * @param parent
- * @param visited
- * @param numNodes
- * @param source
- * @param sink
- * @return true
- * @return false
+ * @param flows flows in the residual graph
+ * @param parent parent vector to store the parent of each node in the augmented path
+ * from sink to source
+ * @param visited visited vector to keep track of visited nodes in the graph
+ * @param numNodes total number of nodes in the graph
+ * @param source source node of the graph
+ * @param sink sink node of the graph
+ * @return true if augmented path is found
+ * @return false if augmented path is not found
  */
 bool BFS(vector<vector<long long int>> &flows, vector<int> &parent, vector<bool> &visited, int numNodes, int source, int sink)
 {
@@ -60,12 +61,12 @@ bool BFS(vector<vector<long long int>> &flows, vector<int> &parent, vector<bool>
 }
 
 /**
- * @brief
+ * @brief Implemts Depth First Search to find reachable nodes from source in final residual graph
  *
- * @param resGraph
- * @param source
- * @param vis
- * @return vector<bool>
+ * @param resGraph final residual graph of original graph
+ * @param source source node of the graph
+ * @param vis vector to keep track of visited nodes
+ * @return vector<bool> visited vector to store reachable nodes from source in final residual graph
  */
 vector<bool> DFS(vector<vector<long long int>> &resGraph, int source, vector<bool> &vis)
 {
@@ -82,11 +83,13 @@ vector<bool> DFS(vector<vector<long long int>> &resGraph, int source, vector<boo
 }
 
 /**
- * @brief
+ * @brief Prints the min s-t cut edges and their capacities
  *
- * @param resGraph
- * @param orgGraph
- * @param vis
+ * Min s-t cut edges are edges from reachable nodes in final residual graph to unreachable nodes
+ *
+ * @param resGraph final residual graph of original graph
+ * @param orgGraph original graph
+ * @param vis vector to keep track of visited nodes in final residual graph
  */
 void min_st_cut(vector<vector<long long int>> resGraph, vector<vector<long long int>> orgGraph, vector<bool> &vis)
 {
@@ -103,13 +106,13 @@ void min_st_cut(vector<vector<long long int>> resGraph, vector<vector<long long 
 }
 
 /**
- * @brief
+ * @brief Implements Ford Fulkerson Algorithm
  *
- * @param orgGraph
- * @param numNodes
- * @param source
- * @param sink
- * @return int
+ * @param orgGraph original graph
+ * @param numNodes total number of nodes in the graph
+ * @param source source node of the graph
+ * @param sink sink node of the graph
+ * @return int max flow in the graph using Ford Fulkerson Algorithm
  */
 int FordFulkerson(vector<vector<long long int>> &orgGraph, int numNodes, int source, int sink)
 {
@@ -156,16 +159,19 @@ int FordFulkerson(vector<vector<long long int>> &orgGraph, int numNodes, int sou
 
     DFS(resGraph, source, vis);
 
-    // cout << "Printing s-t cut edges" << endl;
-    // min_st_cut(resGraph, orgGraph, vis);
+    cout << "Printing s-t cut edges" << endl;
+    min_st_cut(resGraph, orgGraph, vis);
 
     return max_flow;
 }
 
-int main()
+int main(int argc, char *argv[])
 {
-
-    ifstream inputFile("t1_testcases/testcase9.txt");
+    if (argc < 2)
+    {
+        cout << "Please provide input file name" << endl;
+    }
+    ifstream inputFile("./task1_dir/t1_testcases/testcase" + string(argv[1]) + ".txt");
     if (!inputFile.is_open())
     {
         cout << "Error in opening input file" << endl;

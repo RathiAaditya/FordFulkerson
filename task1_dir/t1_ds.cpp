@@ -41,11 +41,11 @@ int getnearestpoweroftwo(int n)
 }
 
 /**
- * @brief reurns delta flow value in residual graph from given source
- *
+ * @brief calculates the max out flow from the src and
+ * returns delta flow value in residual graph from src node
  * @param resGraph Residual graph of original graph
- * @param src Delta flow from node with this index is calculated
- * @return int delta flow from source im given residual graph
+ * @param src Delta flow from node with this i is calculated
+ * @return int delta flow from source in given residual graph
  */
 int getdeltaflow(vector<vector<int>> &resGraph, int src)
 {
@@ -61,16 +61,17 @@ int getdeltaflow(vector<vector<int>> &resGraph, int src)
 }
 
 /**
- * @brief Implements Breadth First Search
+ * @brief Implements Breadth First Search to find augmented path from source to sink is flows graph
  *
- * @param flows
- * @param parent
- * @param visited
- * @param numNodes
- * @param source
- * @param sink
- * @return true
- * @return false
+ * @param flows flows in the residual graph
+ * @param parent parent vector to store the parent of each node in the augmented path
+ * from sink to source
+ * @param visited visited vector to keep track of visited nodes in the graph
+ * @param numNodes total number of nodes in the graph
+ * @param source source node of the graph
+ * @param sink sink node of the graph
+ * @return true if augmented path is found
+ * @return false if augmented path is not found
  */
 bool BFS(vector<vector<int>> &flows, vector<int> &parent, vector<bool> &visited, int numNodes, int source, int sink, int delta)
 {
@@ -101,12 +102,12 @@ bool BFS(vector<vector<int>> &flows, vector<int> &parent, vector<bool> &visited,
 }
 
 /**
- * @brief
+ * @brief Implemts Depth First Search to find reachable nodes from source in final residual graph
  *
- * @param resGraph
- * @param source
- * @param vis
- * @return vector<bool>
+ * @param resGraph final residual graph of original graph
+ * @param source source node of the graph
+ * @param vis vector to keep track of visited nodes
+ * @return vector<bool> visited vector to store reachable nodes from source in final residual graph
  */
 vector<bool> DFS(vector<vector<int>> &resGraph, int source, vector<bool> &vis)
 {
@@ -123,13 +124,15 @@ vector<bool> DFS(vector<vector<int>> &resGraph, int source, vector<bool> &vis)
 }
 
 /**
- * @brief
+ * @brief Prints the min s-t cut edges and their capacities
  *
- * @param resGraph
- * @param orgGraph
- * @param vis
+ * Min s-t cut edges are edges from reachable nodes in final residual graph to unreachable nodes
+ *
+ * @param resGraph final residual graph of original graph
+ * @param orgGraph original graph
+ * @param vis vector to keep track of visited nodes in final residual graph
  */
-void min_st_cut(vector<vector<int>> resGraph, vector<vector<int>> orgGraph, vector<bool> &vis)
+void min_st_cut(vector<vector<int>> &resGraph, vector<vector<int>> &orgGraph, vector<bool> &vis)
 {
     for (int i = 0; i < resGraph.size(); i++)
     {
@@ -144,13 +147,13 @@ void min_st_cut(vector<vector<int>> resGraph, vector<vector<int>> orgGraph, vect
 }
 
 /**
- * @brief
+ * @brief Implements Ford Fulkerson Algorithm with delta scaling
  *
- * @param orgGraph
- * @param numNodes
- * @param source
- * @param sink
- * @return int
+ * @param orgGraph original graph
+ * @param numNodes total number of nodes in the graph
+ * @param source source node of the graph
+ * @param sink sink node of the graph
+ * @return int max flow in the graph using Ford Fulkerson Algorithm with delta scaling
  */
 int FordFulkerson(vector<vector<int>> &orgGraph, int numNodes, int source, int sink)
 {
@@ -159,63 +162,74 @@ int FordFulkerson(vector<vector<int>> &orgGraph, int numNodes, int source, int s
     vector<int> parent(numNodes);
     vector<bool> visited(numNodes, false);
 
-    // Replicate the graph for residual one
+    // Copy original graph to residual graph
     for (int i = 0; i < numNodes; ++i)
     {
         for (int j = 0; j < numNodes; ++j)
         {
             resGraph[i][j] = orgGraph[i][j];
-            // cout << resGraph[i][j] << " ";
         }
-        // cout << endl;
     }
     int max_flow = 0;
     int delta = getdeltaflow(resGraph, source);
 
     while (delta >= 1)
     {
+        // Using BFS to find augmented path
         while (BFS(resGraph, parent, visited, numNodes, source, sink, delta))
         {
             visited.assign(visited.size(), false);
             int path_flow = LLONG_MAX;
+
+            // Finding minimum residual capacity or bottleneck in augmented path
             for (int ver = sink; ver != source; ver = parent[ver])
             {
                 int u = parent[ver];
-                // cout << "ver: " << ver << endl;
-                // cout << "Parent of ver: " << u << endl;
                 path_flow = min(path_flow, resGraph[u][ver]);
-                // path_flow = path_flow < resGraph[u][ver] ? path_flow : resGraph[u][ver];
-                // cout << "Path Flow: " << path_flow << endl;
             }
+
+            // Updating residual capacities of forward and backward flows in residual graphs
             for (int ver = sink; ver != source; ver = parent[ver])
             {
                 int u = parent[ver];
                 resGraph[u][ver] -= path_flow;
                 resGraph[ver][u] += path_flow;
             }
-            // cout << "is it reaching" << endl;
             max_flow += path_flow;
         }
         delta = delta / 2;
     }
-    vector<bool> vis(numNodes, 0);
 
+    // Finding reachable nodes from source in final residual graph using DFS
+    vector<bool> vis(numNodes, 0);
     DFS(resGraph, source, vis);
 
-    // cout << "Printing s-t cut edges" << endl;
-    // min_st_cut(resGraph, orgGraph, vis);
+    for (int i = 0; i < vis.size(); i++)
+    {
+        cout << vis[i] << " ";
+    }
+    cout << endl;
+
+    cout << "Printing s-t cut edges" << endl;
+    min_st_cut(resGraph, orgGraph, vis);
 
     return max_flow;
 }
 
 int32_t main(int32_t argc, char *argv[])
 {
-
-    ifstream inputFile("t1_testcases/testcase5.txt");
+    if (argc < 2)
+    {
+        cout << "Please provide input file name" << endl;
+    }
+    // Input File
+    ifstream inputFile("./task1_dir/t1_testcases/testcase" + string(argv[1]) + ".txt");
     if (!inputFile.is_open())
     {
         cout << "Error in opening input file" << endl;
     }
+
+    // Taking Input
     int numNodes, numEdges;
     inputFile >> numNodes >> numEdges;
     vector<vector<int>> orgGraph(numNodes, vector<int>(numNodes, 0));
@@ -227,6 +241,7 @@ int32_t main(int32_t argc, char *argv[])
         // cout << src << " " << dst << " " << wt << endl;
     }
 
+    // Intialize source and sink
     int source, sink;
     source = 0;
     sink = numNodes - 1;
