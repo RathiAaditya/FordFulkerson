@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['dfs_1',['DFS',['../t1__ds_8cpp.html#a15af4726044e3f33284425b92dcc3172',1,'t1_ds.cpp']]]
+  ['dfs_1',['DFS',['../task1_8cpp.html#a0924ffc0a1f9ba5dcc07d3dfbe0e2c97',1,'task1.cpp']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['t1_5fds_2ecpp_7',['t1_ds.cpp',['../t1__ds_8cpp.html',1,'']]]
+  ['task1_2ecpp_5',['task1.cpp',['../task1_8cpp.html',1,'']]]
 ];
